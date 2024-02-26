@@ -96,6 +96,26 @@ class TrtLlmAPI(CustomLLM):
             model_kwargs: Optional[Dict[str, Any]] = None,
             verbose: bool = False
     ) -> None:
+        """        Initialize the model with provided parameters.
+
+        Args:
+            model_path (Optional[str]): Path to the model. Defaults to None.
+            engine_name (Optional[str]): Name of the engine. Defaults to None.
+            tokenizer_dir (Optional[str]): Directory of the tokenizer. Defaults to None.
+            temperature (float): Temperature for token generation. Defaults to 0.1.
+            max_new_tokens (int): Maximum number of new tokens to generate. Defaults to DEFAULT_NUM_OUTPUTS.
+            context_window (int): Context window size. Defaults to DEFAULT_CONTEXT_WINDOW.
+            messages_to_prompt (Optional[Callable]): Function for prompting messages. Defaults to None.
+            completion_to_prompt (Optional[Callable]): Function for prompting completions. Defaults to None.
+            callback_manager (Optional[CallbackManager]): Manager for callbacks. Defaults to None.
+            generate_kwargs (Optional[Dict[str, Any]]): Additional keyword arguments for generation. Defaults to None.
+            model_kwargs (Optional[Dict[str, Any]]): Additional keyword arguments for the model. Defaults to None.
+            verbose (bool): Verbosity flag. Defaults to False.
+
+        Raises:
+            ValueError: If the provided model path does not exist.
+        """
+
 
         model_kwargs = model_kwargs or {}
         model_kwargs.update({"n_ctx": context_window, "verbose": verbose})
@@ -191,12 +211,23 @@ class TrtLlmAPI(CustomLLM):
 
     @classmethod
     def class_name(cls) -> str:
-        """Get class name."""
+        """        Get the name of the class.
+
+        This function returns the name of the class as a string.
+
+        Returns:
+            str: The name of the class.
+        """
         return "TrtLlmAPI"
 
     @property
     def metadata(self) -> LLMMetadata:
-        """LLM metadata."""
+        """        Return LLM metadata.
+
+        Returns:
+            LLMMetadata: An instance of LLMMetadata containing context_window, num_output, and model_name.
+                This function returns an instance of LLMMetadata with the specified context_window, num_output, and model_name.
+        """
         return LLMMetadata(
             context_window=self.context_window,
             num_output=self.max_new_tokens,
@@ -205,6 +236,19 @@ class TrtLlmAPI(CustomLLM):
 
     @llm_chat_callback()
     def chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponse:
+        """        Generate a chat response based on the given messages.
+
+        Args:
+            messages (Sequence[ChatMessage]): A sequence of chat messages.
+            **kwargs (Any): Additional keyword arguments.
+
+        Returns:
+            ChatResponse: A response generated based on the input messages.
+
+        Raises:
+            Any: Any exceptions that may occur during the execution of the function.
+        """
+
         prompt = self.messages_to_prompt(messages)
         
         completion_response = self.complete(prompt, formatted=True, **kwargs)

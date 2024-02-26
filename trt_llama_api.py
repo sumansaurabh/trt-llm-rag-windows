@@ -205,6 +205,17 @@ class TrtLlmAPI(CustomLLM):
 
     @llm_chat_callback()
     def chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponse:
+        """        Generate a chat response based on the input messages.
+
+        Args:
+            messages (Sequence[ChatMessage]): The input messages for the chat.
+            **kwargs (Any): Additional keyword arguments.
+
+        Returns:
+            ChatResponse: The response generated based on the input messages.
+                This function takes a sequence of ChatMessage objects as input and generates a chat response based on these messages. It uses the 'messages_to_prompt' method to convert the input messages into a prompt, and then calls the 'complete' method to generate a completion response. Finally, it converts the completion response to a ChatResponse object and returns it.
+        """
+
         prompt = self.messages_to_prompt(messages)
         
         completion_response = self.complete(prompt, formatted=True, **kwargs)
